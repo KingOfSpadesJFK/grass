@@ -4,7 +4,7 @@ const FILL_LENGTH = 1
 const GROUP_SIZE = 1
 
 ## Path to the compute shader that calculates the blade positions
-@export var shader_path = "res://shader/grass.glsl"
+@export var shader_path = "res://shader/grass_position.glsl"
 
 ## The mesh for the blades of grass
 @export var mesh: Mesh
@@ -34,50 +34,62 @@ func _ready() -> void:
 	multimesh.visible_instance_count = -1
 	# multimesh.set_instance_transform(0, Transform3D(Basis(), Vector3(0, 0, 0)))
 
+	# Fill the blade_positions array with 0
+	blade_positions.resize(density.x * density.y * 4)
+	blade_positions.fill(0)
+	blade_positions = compute_blade_positions()
+	print(blade_positions)
+
 	# Set the transform of the instances.
 	for i in range(density.x):
 		for j in range(density.y):
-			multimesh.set_instance_transform(i * density.y + j, 
+			var index = i * density.y + j
+			var pos = Vector2(blade_positions[index*4], blade_positions[index*4+2])
+			multimesh.set_instance_transform(index, 
 					Transform3D(Basis(), 
-					Vector3(size.x, 1, size.y) * Vector3(i/float(density.x) - 0.5, 0, j/float(density.y) - 0.5)))
-
-	# Fill the blade_positions array with 0
-	blade_positions.resize(density.x * density.y)
-	blade_positions.fill(0)
-	# thing()
+					Vector3(pos.x, 0, pos.y)))
 
 
 func _process(_delta: float) -> void:
 	pass
 
 # Create a uniform to assign the buffer to the rendering device
-func create_uniform(data, binding: int) -> RDUniform:
+func create_uniform(data, type, binding: int) -> RDUniform:
 	var uniform = RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER
+	uniform.uniform_type = type
 	uniform.binding = binding
 	uniform.add_id(data)
 	return uniform
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func thing() -> void:
+func compute_blade_positions() -> Array:
 	# Prepare our data. We use floats in the shader, so we need 32 bit.
-	var input = PackedFloat32Array(blade_positions)
+	var arr = [size.x, size.y]
+	var input = PackedFloat32Array(arr)
 	var input_bytes = input.to_byte_array()
+	print(input_bytes.size())
 
 	# Create a storage buffer that can hold our float values.
 	# Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
-	var buffer = render_device.storage_buffer_create(input_bytes.size(), input_bytes)
+	arr.resize(density.x * density.y * 4)
+	arr.fill(0)
+	var inBuffer = render_device.storage_buffer_create(input_bytes.size(), input_bytes)
+	var outBuffer = render_device.storage_buffer_create(arr.size() * 4, PackedFloat32Array(arr).to_byte_array())
 
-	# Create the uniform set
-	var uniform_set = render_device.uniform_set_create([
-		create_uniform(buffer, 0),
+	# Create the uniform sets
+	var in_uniform_set = render_device.uniform_set_create([
+		create_uniform(inBuffer, RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER, 0),
 	], shader, 0) # the last parameter (the 0) needs to match the "set" in our shader file
+	var out_uniform_set = render_device.uniform_set_create([
+		create_uniform(outBuffer, RenderingDevice.UNIFORM_TYPE_STORAGE_BUFFER, 0),
+	], shader, 1)
 
 	# Create a compute pipeline
 	var pipeline = render_device.compute_pipeline_create(shader)
 	var compute_list = render_device.compute_list_begin()
 	render_device.compute_list_bind_compute_pipeline(compute_list, pipeline)
-	render_device.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+	render_device.compute_list_bind_uniform_set(compute_list, in_uniform_set, 0)
+	render_device.compute_list_bind_uniform_set(compute_list, out_uniform_set, 1)
 	render_device.compute_list_dispatch(compute_list, density.x/GROUP_SIZE, density.y/GROUP_SIZE, 1)
 	render_device.compute_list_end()
 
@@ -86,7 +98,5 @@ func thing() -> void:
 	render_device.sync()
 
 	# Read back the data from the buffer
-	var output_bytes = render_device.buffer_get_data(buffer)
-	var output = output_bytes.to_float32_array()
-	print("Input: ", input)
-	print("Output: ", output)
+	var output_bytes = render_device.buffer_get_data(outBuffer)
+	return output_bytes.to_float32_array()

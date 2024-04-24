@@ -40,8 +40,7 @@ layers = 2
 multimesh = SubResource("MultiMesh_2px5f")
 script = ExtResource("1_lpbpr")
 mesh = ExtResource("2_ej4yi")
-size = Vector2(20, 20)
-density = Vector2i(64, 32)
+size = Vector2(10, 10)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="MultiMeshInstance3D"]
 mesh = SubResource("PlaneMesh_h4av8")

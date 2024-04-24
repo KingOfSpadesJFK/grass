@@ -4,9 +4,14 @@ render_mode cull_disabled;
 instance uniform vec3 grass_color : source_color = vec3(.45, 0.752, 0.24);
 instance uniform vec3 grass_highlight : source_color = vec3(.836, 0.753, 0.157);
 
+float rand(vec2 co){
+    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
 void vertex() {
 	// Called for every vertex the material is visible on.
 	mat4 modelView = MODELVIEW_MATRIX;
+	vec3 modelPosition = vec3(MODEL_MATRIX[3][0], MODEL_MATRIX[3][1], MODEL_MATRIX[3][2]);
 	
   	// X
 	modelView[0][0] = -1.0; 
@@ -22,6 +27,7 @@ void vertex() {
 	modelView[2][2] = -1.0; 
 	  
 	vec4 P = modelView * vec4(VERTEX, 1);
+	P.xz += 0.5f - rand(modelPosition.xz);
 	P.z = P.z + sin(TIME)/10.f*VERTEX.y;
 	POSITION = PROJECTION_MATRIX * P;
 	UV.x *= UV.y;
