@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://ten68qx0hd18"
+path="res://.godot/imported/grass_position.glsl-78c4e8501a3ddd0854ec510fa55a8c7c.res"
+
+[deps]
+
+source_file="res://shader/grass_position.glsl"
+dest_files=["res://.godot/imported/grass_position.glsl-78c4e8501a3ddd0854ec510fa55a8c7c.res"]
+
+[params]
+

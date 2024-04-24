@@ -1,0 +1,23 @@
+[gd_resource type="ArrayMesh" load_steps=3 format=3 uid="uid://dlfmo8k1c6e86"]
+
+[ext_resource type="Shader" path="res://shader/grass.gdshader" id="1_jou8f"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_geibp"]
+render_priority = 0
+shader = ExtResource("1_jou8f")
+
+[resource]
+_surfaces = [{
+"aabb": AABB(-0.053868, 0, 0, 0.107736, 1, 1e-05),
+"attribute_data": PackedByteArray(255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+"format": 34896613399,
+"index_count": 21,
+"index_data": PackedByteArray(0, 0, 1, 0, 2, 0, 2, 0, 1, 0, 3, 0, 4, 0, 5, 0, 6, 0, 6, 0, 5, 0, 7, 0, 1, 0, 0, 0, 4, 0, 4, 0, 0, 0, 5, 0, 6, 0, 7, 0, 8, 0),
+"material": SubResource("ShaderMaterial_geibp"),
+"name": "Plane",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 9,
+"vertex_data": PackedByteArray(97, 236, 173, 71, 0, 0, 255, 255, 157, 19, 173, 71, 0, 0, 255, 255, 254, 255, 0, 0, 0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 19, 44, 123, 144, 0, 0, 255, 255, 235, 211, 123, 144, 0, 0, 255, 255, 190, 77, 49, 205, 0, 0, 255, 255, 64, 178, 49, 205, 0, 0, 255, 255, 255, 127, 255, 255, 0, 0, 255, 255, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127)
+}]
+blend_shape_mode = 0
