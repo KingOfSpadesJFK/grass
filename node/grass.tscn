@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://gdax7rbkwv7d"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_h4av8"]
+
+[node name="Grass" type="Node3D"]
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_h4av8")
