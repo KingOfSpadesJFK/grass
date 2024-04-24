@@ -12,6 +12,7 @@ void vertex() {
 	// Called for every vertex the material is visible on.
 	mat4 modelView = MODELVIEW_MATRIX;
 	vec3 modelPosition = vec3(MODEL_MATRIX[3][0], MODEL_MATRIX[3][1], MODEL_MATRIX[3][2]);
+	vec2 seed = vec2(rand(modelPosition.xz), rand(modelPosition.zx));
 	
   	// X
 	modelView[0][0] = -1.0; 
@@ -19,7 +20,7 @@ void vertex() {
 	modelView[0][2] = 0.0;
 	// Clamp the Y Collumn, so that looking directly up will still have some thickness
 	modelView[1][0] = 0.0; 
-	modelView[1][1] = clamp(modelView[1][1], 0.125, 1.0); 
+	modelView[1][1] = clamp(modelView[1][1], 0.125, 1.0) + seed.x * .25; // Add a perlin noise function
 	modelView[1][2] = 0.0;
 	// Z
 	modelView[2][0] = 0.0; 
@@ -27,9 +28,11 @@ void vertex() {
 	modelView[2][2] = -1.0; 
 	  
 	vec4 P = modelView * vec4(VERTEX, 1);
-	P.xz += 0.5f - rand(modelPosition.xz);
-	P.z = P.z + sin(TIME)/10.f*VERTEX.y;
+	P.xz += 0.5f - seed;
+	P.z = P.z + sin(TIME+seed.y*PI)/10.f*VERTEX.y;
 	POSITION = PROJECTION_MATRIX * P;
+	
+	// Set the UV for the color
 	UV.x *= UV.y;
 	UV.y = mix(1.f, 0.0f, 1.f-VERTEX.y);
 		

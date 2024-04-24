@@ -22,5 +22,5 @@ void main() {
     vec4 size = vec4(grass_data_buffer.size.x, 1.0, grass_data_buffer.size.y, 0.0);
     uint index = gl_GlobalInvocationID.x * gl_NumWorkGroups.y + gl_GlobalInvocationID.y;
     
-    grass_out_buffer.positions[index] = size * (pos / density * 2.0 - 1.0);
+    grass_out_buffer.positions[index] = size * (pos / density - 0.5);
 }

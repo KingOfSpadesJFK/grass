@@ -38,7 +38,6 @@ func _ready() -> void:
 	blade_positions.resize(density.x * density.y * 4)
 	blade_positions.fill(0)
 	blade_positions = compute_blade_positions()
-	print(blade_positions)
 
 	# Set the transform of the instances.
 	for i in range(density.x):
@@ -67,7 +66,6 @@ func compute_blade_positions() -> Array:
 	var arr = [size.x, size.y]
 	var input = PackedFloat32Array(arr)
 	var input_bytes = input.to_byte_array()
-	print(input_bytes.size())
 
 	# Create a storage buffer that can hold our float values.
 	# Each float has 4 bytes (32 bit) so 10 x 4 = 40 bytes
