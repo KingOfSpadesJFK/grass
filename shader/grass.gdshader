@@ -12,7 +12,7 @@ void vertex() {
 	// Called for every vertex the material is visible on.
 	mat4 modelView = MODELVIEW_MATRIX;
 	vec3 modelPosition = vec3(MODEL_MATRIX[3][0], MODEL_MATRIX[3][1], MODEL_MATRIX[3][2]);
-	vec2 seed = vec2(rand(modelPosition.xz), rand(modelPosition.zx));
+	vec2 seed = vec2(rand(modelPosition.xz + NODE_POSITION_WORLD.xz), rand(modelPosition.zx + NODE_POSITION_WORLD.zx));
 	
   	// X
 	modelView[0][0] = -1.0; 
@@ -42,6 +42,7 @@ void fragment() {
 	// Called for every pixel the material is visible on.
 	float f = UV.x * UV.y;
 	ALBEDO = mix(grass_color, grass_highlight, f*f);
+	//ALBEDO = vec3(1,1,1) * f*f;
 }
 
 //void light() {

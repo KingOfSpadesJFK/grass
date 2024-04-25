@@ -1,4 +1,4 @@
-extends MultiMeshInstance3D
+extends Node3D
 
 const FILL_LENGTH = 1
 const GROUP_SIZE = 1
@@ -15,12 +15,25 @@ const GROUP_SIZE = 1
 ## How many blades of grass fill the X and Z directions
 @export var density: Vector2i = Vector2(32, 32)
 
+## The camera path to get the camera position
+@export var camera_path: NodePath
+
+@export var floor_mesh: Mesh
+
+@export var show_floor_mesh: bool
+
 var render_device
 var shader
 var blade_positions: Array = []
+var multimesh: MultiMesh
+var camera: Camera3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# Get the camera
+	camera = get_node(camera_path)
+
+	# Set up the rendering device
 	render_device = RenderingServer.create_local_rendering_device()
 	var sf = load(shader_path)
 	var spirv: RDShaderSPIRV = sf.get_spirv()
@@ -32,7 +45,6 @@ func _ready() -> void:
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.instance_count = density.x * density.y
 	multimesh.visible_instance_count = -1
-	# multimesh.set_instance_transform(0, Transform3D(Basis(), Vector3(0, 0, 0)))
 
 	# Fill the blade_positions array with 0
 	blade_positions.resize(density.x * density.y * 4)
@@ -48,8 +60,15 @@ func _ready() -> void:
 					Transform3D(Basis(), 
 					Vector3(pos.x, 0, pos.y)))
 
+	# Set the multimesh instance
+	$MultiMeshInstance0.multimesh = multimesh
+
 
 func _process(_delta: float) -> void:
+	# Update the multimesh position
+	var halfSize = Vector3(size.x/2, 1, size.y/2)
+	if camera != null:
+		$MultiMeshInstance0.position = floor(camera.global_transform.origin / halfSize) * halfSize + Vector3(size.x/4, -1, size.y/4)
 	pass
 
 # Create a uniform to assign the buffer to the rendering device

@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://b3k0vgyehx56r"]
+[gd_scene load_steps=12 format=3 uid="uid://b3k0vgyehx56r"]
 
 [ext_resource type="PackedScene" uid="uid://gdax7rbkwv7d" path="res://node/grass.tscn" id="1_meknw"]
 [ext_resource type="Script" path="res://script/player.gd" id="2_d60u5"]
+[ext_resource type="ArrayMesh" uid="uid://dlfmo8k1c6e86" path="res://assets/grass.tres" id="2_sf0i1"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7lbjo"]
 
@@ -33,7 +34,10 @@ subdivide_depth = 128
 [node name="World" type="Node3D"]
 
 [node name="Grass" parent="." instance=ExtResource("1_meknw")]
-density = Vector2i(64, 64)
+mesh = ExtResource("2_sf0i1")
+size = Vector2(20, 20)
+density = Vector2i(100, 100)
+camera_path = NodePath("../CharacterBody3D/Node3D/Camera3D")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_b78r4")
