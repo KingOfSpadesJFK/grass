@@ -35,15 +35,17 @@ subdivide_depth = 128
 
 [node name="Grass" parent="." instance=ExtResource("1_meknw")]
 mesh = ExtResource("2_sf0i1")
-size = Vector2(20, 20)
-density = Vector2i(100, 100)
-camera_path = NodePath("../CharacterBody3D/Node3D/Camera3D")
+size = 50.0
+density = 4
+update_distance = 1.0
+camera_path = NodePath("../CharacterBody3D/Head/Eye")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_b78r4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.719316, 0.643949, -0.260604, 0, 0.375141, 0.926968, 0.694683, -0.666782, 0.269845, -2.90709, 0, 0.0804876)
+transform = Transform3D(0.685832, -0.430504, 0.586771, -0.192128, 0.670561, 0.716544, -0.701941, -0.604164, 0.37718, -2.90709, 3.47453, 0.0804876)
+shadow_enabled = true
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.706487, 0)
@@ -52,10 +54,10 @@ script = ExtResource("2_d60u5")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
 shape = SubResource("CapsuleShape3D_e12g0")
 
-[node name="Node3D" type="Node3D" parent="CharacterBody3D"]
+[node name="Head" type="Node3D" parent="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.70517, 0)
 
-[node name="Camera3D" type="Camera3D" parent="CharacterBody3D/Node3D"]
+[node name="Eye" type="Camera3D" parent="CharacterBody3D/Head"]
 
 [node name="Cube" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.80315, 1.45477, -3.18312)
