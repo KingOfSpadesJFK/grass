@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://gdax7rbkwv7d" path="res://node/grass.tscn" id="1_meknw"]
 [ext_resource type="Script" path="res://script/player.gd" id="2_d60u5"]
-[ext_resource type="ArrayMesh" uid="uid://dlfmo8k1c6e86" path="res://assets/grass.tres" id="2_sf0i1"]
+[ext_resource type="ArrayMesh" uid="uid://bqixdre0mujbm" path="res://assets/grass2.tres" id="2_rgoli"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7lbjo"]
 
@@ -34,9 +34,9 @@ subdivide_depth = 128
 [node name="World" type="Node3D"]
 
 [node name="Grass" parent="." instance=ExtResource("1_meknw")]
-mesh = ExtResource("2_sf0i1")
+mesh = ExtResource("2_rgoli")
 size = 50.0
-density = 4
+density = 5
 update_distance = 1.0
 camera_path = NodePath("../CharacterBody3D/Head/Eye")
 
