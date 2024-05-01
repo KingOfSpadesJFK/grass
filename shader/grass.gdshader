@@ -8,8 +8,8 @@
 
 shader_type spatial;
 //render_mode cull_disabled;
-render_mode unshaded;
-render_mode specular_disabled;
+render_mode diffuse_toon;
+render_mode specular_toon;
 
 instance uniform vec3 grass_color : source_color = vec3(.45, 0.752, 0.24);
 instance uniform vec3 grass_highlight : source_color = vec3(.836, 0.753, 0.157);
@@ -40,6 +40,9 @@ void vertex() {
 	distScale *= distScale;
 	distScale = clamp(distScale*7.5, 0., 1.);
 
+	// Calculate the random number based on the position of the blade of grass in the world
+	//  This sucked trying to figure out what I'm missing from the math ngl
+	//  I did it this way since the blade positions are grid-based internally
 	float stepDist = 1.0 / grass_density;
 	modelPosition = round((modelPosition + NODE_POSITION_WORLD) / stepDist);
 	vec2 seed = vec2(rand(modelPosition.xz), rand(modelPosition.zx));
@@ -60,8 +63,15 @@ void vertex() {
 		modelView[2][2] = -distScale;
 	}
 
+	// Add the random model displacement
 	VERTEX.xz += 0.5f - seed;
-	float wind_radians = radians(wind_direction) + seed.x/8.0*PI;
+	
+	// Calculate the vertex positions based on the wind
+	//  Lots of math here, but the important thing is
+	//   - Lots of randomness
+	//   - The grass bends when farther from the ground
+	//   - Trigonometry
+	float wind_radians = radians(wind_direction) + cos(wave_time * (0.2+seed.y/2.0) + seed.x*seed.y*10.0) * seed.x/8.0*PI;
 	vec2 wind_normal = vec2(cos(wind_radians), sin(wind_radians));
 	float dispFactor = VERTEX.y*VERTEX.y;
 	float disp = wind_strength*sqrt(dispFactor/1000.0) + sin(wave_time+seed.x*10.0)/10.f*dispFactor;
@@ -69,9 +79,9 @@ void vertex() {
 	float zDisp = wind_normal.y * disp;
 	float yDisp  = -abs(disp);
 	VERTEX += vec3(xDisp, yDisp, zDisp);
+	
 	vec4 P = modelView * vec4(VERTEX, 1);
 	POSITION = PROJECTION_MATRIX * P;
-
 }
 
 void fragment() {

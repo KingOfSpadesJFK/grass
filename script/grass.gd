@@ -39,6 +39,7 @@ var grass_center = Vector2(0, 0)
 var wave_time: float = 0.0;
 var shader_wave_time: float = 0.0;
 var shader_wind_strength: float = 1.0;
+var shader_wind_direction: float = 0.0;
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -75,13 +76,15 @@ func _process(_delta: float) -> void:
 
 	wind_strength = sin(wave_time) * 0.5 + 0.5
 	wind_strength *= 20.0
+	wind_direction += _delta * 10.0
 	wave_time += _delta
 
 	# Update the shader uniforms
 	shader_wave_time += _delta * shader_wind_strength
 	shader_wind_strength = lerpf(shader_wind_strength, wind_strength, _delta * 2.0)
+	shader_wind_direction = lerpf(shader_wind_direction, wind_direction, _delta * 2.0)
 	$MultiMeshInstance0.set_instance_shader_parameter("wave_time", shader_wave_time)
-	$MultiMeshInstance0.set_instance_shader_parameter("wind_direction", wind_direction)
+	$MultiMeshInstance0.set_instance_shader_parameter("wind_direction", shader_wind_direction)
 	$MultiMeshInstance0.set_instance_shader_parameter("wind_strength", shader_wind_strength)
 
 # Create a uniform to assign the buffer to the rendering device
@@ -112,6 +115,7 @@ func set_blade_positions(blade_positions) -> int:
 
 func compute_blade_positions() -> Array:
 	# Prepare our data. We use floats in the shader, so we need 32 bit.
+	#          vec2 size;  vec2 offset;
 	var arr = [size, size, grass_center.x, grass_center.y]
 	var input = PackedFloat32Array(arr)
 	var input_bytes = input.to_byte_array()
