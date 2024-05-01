@@ -60,7 +60,7 @@ func _ready() -> void:
 	multimesh.mesh = mesh;
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.instance_count = density * density * floor(size * size)
-	update_blade_positions()
+	multimesh.visible_instance_count = set_blade_positions(compute_blade_positions())
 	$MultiMeshInstance0.multimesh = multimesh
 	$MultiMeshInstance0.set_instance_shader_parameter("grass_size", size)
 	$MultiMeshInstance0.set_instance_shader_parameter("grass_density", float(density))
@@ -91,11 +91,6 @@ func create_uniform(data, type, binding: int) -> RDUniform:
 	uniform.binding = binding
 	uniform.add_id(data)
 	return uniform
-
-func update_blade_positions() -> void:
-	# Fill the blade_positions array with 0
-	var blade_positions = compute_blade_positions()
-	multimesh.visible_instance_count = set_blade_positions(blade_positions)
 
 
 func set_blade_positions(blade_positions) -> int:
