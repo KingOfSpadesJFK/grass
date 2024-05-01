@@ -1,3 +1,11 @@
+/*
+	Grass Shader
+	 Vertex shader waves the grass
+	 Fragment shader colors the grass according to the input texture
+	 Black is for the normal grass color
+	 White is for the grass highlight color
+*/
+
 shader_type spatial;
 //render_mode cull_disabled;
 render_mode unshaded;
@@ -10,12 +18,13 @@ instance uniform float wind_strength = 1.0;
 instance uniform float grass_size = 30.0;
 instance uniform float grass_density = 1.0;
 instance uniform bool enable_billboard = false;
+instance uniform float wave_time = 0.0;
 uniform sampler2D image : source_color;
-
 
 float rand(vec2 co){
     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
+
 
 void vertex() {
 	// Called for every vertex the material is visible on.
@@ -52,11 +61,13 @@ void vertex() {
 	}
 
 	VERTEX.xz += 0.5f - seed;
-	float wind_radians = radians(wind_direction);
+	float wind_radians = radians(wind_direction) + seed.x/8.0*PI;
 	vec2 wind_normal = vec2(cos(wind_radians), sin(wind_radians));
-	float xDisp = wind_normal.x * wind_strength * sin(TIME+seed.y*PI)/10.f*VERTEX.y*VERTEX.y;
-	float zDisp = wind_normal.y * wind_strength * sin(TIME+seed.y*PI)/10.f*VERTEX.y*VERTEX.y;
-	float yDisp  = -abs(wind_strength * sin(TIME+seed.y*PI)/10.f*VERTEX.y*VERTEX.y);
+	float dispFactor = VERTEX.y*VERTEX.y;
+	float disp = wind_strength*sqrt(dispFactor/1000.0) + sin(wave_time+seed.x*10.0)/10.f*dispFactor;
+	float xDisp = wind_normal.x * disp;
+	float zDisp = wind_normal.y * disp;
+	float yDisp  = -abs(disp);
 	VERTEX += vec3(xDisp, yDisp, zDisp);
 	vec4 P = modelView * vec4(VERTEX, 1);
 	POSITION = PROJECTION_MATRIX * P;

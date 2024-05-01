@@ -34,12 +34,14 @@ buffer = PackedFloat32Array(-0.501, 0, 0, -3.37585, 0, 0.501, 0, 0, 0, 0, -0.501
 
 [node name="Grass" type="Node3D"]
 script = ExtResource("1_lpbpr")
+wind_strength = 10.0
 
 [node name="MultiMeshInstance0" type="MultiMeshInstance3D" parent="."]
 layers = 2
 cast_shadow = 0
 instance_shader_parameters/enable_billboard = false
-instance_shader_parameters/grass_color = Color(0.45, 0.752, 0.24, 1)
-instance_shader_parameters/wind_direction = 40.0
-instance_shader_parameters/wind_strength = 2.041
+instance_shader_parameters/grass_color = Color(0.54724, 0.908752, 0.295229, 1)
+instance_shader_parameters/grass_highlight = Color(0.924765, 0.839277, 0.253472, 1)
+instance_shader_parameters/wind_direction = 0.0
+instance_shader_parameters/wind_strength = 10.0
 multimesh = SubResource("MultiMesh_2px5f")

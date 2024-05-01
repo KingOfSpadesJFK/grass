@@ -25,11 +25,20 @@ const GROUP_SIZE = 1
 
 @export var show_floor_mesh: bool
 
+## The angle (in degrees) the wind is facing
+@export var wind_direction: float = 0.0
+
+## How strong the wind should be
+@export var wind_strength: float = 1.0
+
 var render_device
 var shader
 var multimesh: MultiMesh
 var camera: Camera3D
 var grass_center = Vector2(0, 0)
+var wave_time: float = 0.0;
+var shader_wave_time: float = 0.0;
+var shader_wind_strength: float = 1.0;
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -63,7 +72,17 @@ func _process(_delta: float) -> void:
 	if position.distance_to(camera.global_position) > update_distance:
 		position.x = floor(camera.global_position.x / step) * step
 		position.z = floor(camera.global_position.z / step) * step
-	pass
+
+	wind_strength = sin(wave_time) * 0.5 + 0.5
+	wind_strength *= 20.0
+	wave_time += _delta
+
+	# Update the shader uniforms
+	shader_wave_time += _delta * shader_wind_strength
+	shader_wind_strength = lerpf(shader_wind_strength, wind_strength, _delta * 2.0)
+	$MultiMeshInstance0.set_instance_shader_parameter("wave_time", shader_wave_time)
+	$MultiMeshInstance0.set_instance_shader_parameter("wind_direction", wind_direction)
+	$MultiMeshInstance0.set_instance_shader_parameter("wind_strength", shader_wind_strength)
 
 # Create a uniform to assign the buffer to the rendering device
 func create_uniform(data, type, binding: int) -> RDUniform:
